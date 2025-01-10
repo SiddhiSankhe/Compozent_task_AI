@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background: #2575fc;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #1a5bbd;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #2575fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Price Prediction</h1>
+        <form action="/predict" method="POST">
+            <label for="open">Open Price</label>
+            <input type="number" id="open" name="open" step="0.01" required>
+
+            <label for="close">Close Price</label>
+            <input type="number" id="close" name="close" step="0.01" required>
+
+            <label for="volume">Volume</label>
+            <input type="number" id="volume" name="volume" required>
+
+            <label for="year">Year</label>
+            <input type="number" id="year" name="year" required>
+
+            <label for="month">Month</label>
+            <input type="number" id="month" name="month" min="1" max="12" required>
+
+            <label for="day_of_the_week">Day of the Week</label>
+            <input type="number" id="day_of_the_week" name="day_of_the_week" min="0" max="6" required>
+
+            <label for="Average_price">Average Price</label>
+            <input type="number" id="Average_price" name="Average_price" step="0.01" required>
+
+            <label for="Price_Range">Price Range</label>
+            <input type="number" id="Price_Range" name="Price_Range" step="0.01" required>
+
+            <button type="submit">Predict</button>
+        </form>
+        {% if prediction %}
+        <div class="result">
+            {{ prediction }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

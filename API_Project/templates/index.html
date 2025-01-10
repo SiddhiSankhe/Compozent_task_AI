@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5dc;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: #fff8e7;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+        }
+        h1 {
+            text-align: center;
+            color: #8b4513;
+            font-family: 'Garamond', serif;
+        }
+        .book-form {
+            margin-top: 20px;
+        }
+        .book-form input, .book-form button {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #d9ad7c;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .book-form input:focus {
+            outline: none;
+            border-color: #8b4513;
+            box-shadow: 0 0 5px rgba(139, 69, 19, 0.5);
+        }
+        .book-form button {
+            background-color: #8b4513;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .book-form button:hover {
+            background-color: #5d3317;
+        }
+        .book-list {
+            margin-top: 20px;
+        }
+        .book {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff0da;
+            padding: 15px;
+            border: 1px solid #d9ad7c;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .book-details {
+            font-family: 'Palatino Linotype', serif;
+        }
+        .book-details h3 {
+            margin: 0;
+            color: #8b4513;
+        }
+        .book-details p {
+            margin: 5px 0;
+            color: #5d3317;
+        }
+        .book-actions button {
+            margin-left: 10px;
+            padding: 7px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        .book-actions .edit {
+            background-color: #ffcc5c;
+            color: #8b4513;
+        }
+        .book-actions .edit:hover {
+            background-color: #d4a84d;
+        }
+        .book-actions .delete {
+            background-color: #ff6f61;
+            color: white;
+        }
+        .book-actions .delete:hover {
+            background-color: #d45548;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Library Management System 📚</h1>
+        <form id="book-form" class="book-form">
+            <input type="text" id="title" placeholder="Book Title" required>
+            <input type="text" id="author" placeholder="Author" required>
+            <input type="number" id="year" placeholder="Published Year" required>
+            <input type="text" id="genre" placeholder="Genre" required>
+            <button type="submit">Add Book</button>
+        </form>
+        <div id="book-list" class="book-list"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('book-form');
+        const bookList = document.getElementById('book-list');
+
+        const fetchBooks = async () => {
+            const response = await fetch('/books');
+            const data = await response.json();
+            renderBooks(data.books);
+        };
+
+        const renderBooks = (books) => {
+            bookList.innerHTML = '';
+            books.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.classList.add('book');
+                bookDiv.innerHTML = `
+                    <div class="book-details">
+                        <h3>${book.title} (${book.published_year})</h3>
+                        <p><strong>Author:</strong> ${book.author}</p>
+                        <p><strong>Genre:</strong> ${book.genre}</p>
+                        <p><strong>Available:</strong> ${book.available ? "Yes" : "No"}</p>
+                    </div>
+                    <div class="book-actions">
+                        <button class="edit" onclick="editBook(${book.id})">Edit</button>
+                        <button class="delete" onclick="deleteBook(${book.id})">Delete</button>
+                    </div>
+                `;
+                bookList.appendChild(bookDiv);
+            });
+        };
+
+        const addBook = async (title, author, year, genre) => {
+            await fetch('/books', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, author, published_year: year, genre })
+            });
+            fetchBooks();
+        };
+
+        const deleteBook = async (id) => {
+            await fetch(`/books/${id}`, { method: 'DELETE' });
+            fetchBooks();
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const year = document.getElementById('year').value;
+            const genre = document.getElementById('genre').value;
+            addBook(title, author, year, genre);
+            form.reset();
+        });
+
+        fetchBooks();
+    </script>
+</body>
+</html>

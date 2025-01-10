@@ -1,0 +1,1 @@
+Total number of words in sample file are : 649.
